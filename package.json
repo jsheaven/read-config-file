@@ -1,5 +1,5 @@
 {
-  "name": "read-config-file",
+  "name": "@jsheaven/read-config-file",
   "version": "1.0.0",
   "type": "module",
   "publishConfig": {

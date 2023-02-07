@@ -1,4 +1,4 @@
-<h1 align="center">read-config-file</h1>
+<h1 align="center">@jsheaven/read-config-file</h1>
 
 > Tiny library to read config files like `your.config.js`, `your.config.mjs`, `your.config.ts`, `your.conifg.json` or `your.config.json5` from disk.
 
@@ -19,7 +19,7 @@
 
 <h2 align="center">Example usage (CLI)</h2>
 
-`NODE_OPTIONS='--experimental-vm-modules' npx read-config-file --config ./test/some.config.ts`
+`NODE_OPTIONS='--experimental-vm-modules' npx @jsheaven/read-config-file --config ./test/some.config.ts`
 
 > You need at least version 18 of [Node.js](https://www.nodejs.org) installed.
 
@@ -27,13 +27,13 @@
 
 <h3 align="center">Setup</h2>
 
-- yarn: `yarn add read-config-file`
-- npm: `npm install read-config-file`
+- yarn: `yarn add @jsheaven/read-config-file`
+- npm: `npm install @jsheaven/read-config-file`
 
 <h3 align="center">ESM</h2>
 
 ```ts
-import { readConfigFile } from 'read-config-file'
+import { readConfigFile } from '@jsheaven/read-config-file'
 
 const result = await readConfigFile({
   configFilePath: './test/some.config.ts',
@@ -43,7 +43,7 @@ const result = await readConfigFile({
 <h3 align="center">CommonJS</h2>
 
 ```ts
-const { readConfigFile } = require('read-config-file')
+const { readConfigFile } = require('@jsheaven/read-config-file')
 
 // same API like ESM variant
 ```
