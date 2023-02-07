@@ -19,14 +19,14 @@ export type Command = 'help' | 'version' | 'readConfigFile'
 export interface CLIState {
   cmd: Command
   options: {
-    foo?: string
+    configFilePath?: string
   }
 }
 
 /** Determine which action the user requested */
 export const resolveArgs = (flags: Arguments): CLIState => {
   const options: CLIState['options'] = {
-    foo: typeof flags.foo === 'string' ? flags.foo : undefined,
+    configFilePath: typeof flags.config === 'string' ? flags.config : undefined,
   }
 
   if (flags.version) {
@@ -49,20 +49,20 @@ export const resolveArgs = (flags: Arguments): CLIState => {
 /** Display --help flag */
 const printHelp = () => {
   console.error(`
-  ${colors.bold('read-config-file')} - does readConfigFile
+  ${colors.bold('read-config-file')} - reads config files
 
   ${colors.bold('Commands:')}
-    readConfigFile          Does readConfigFile.
+    readConfigFile        Reads a config file.
     version               Show the program version.
     help                  Show this help message.
 
   ${colors.bold('Flags:')}
-    --foo <string>        A value to use in the CLI
+    --config <path>       Path to the config file to read.
     --version             Show the version number and exit.
     --help                Show this help message.
 
   ${colors.bold('Example(s):')}
-    npx read-config-file --foo X
+    NODE_OPTIONS='--experimental-vm-modules' npx read-config-file --config ./test/some.config.ts
 `)
 }
 
@@ -79,9 +79,9 @@ export const cli = async (args: string[]) => {
 
   console.log(
     colors.dim('>'),
-    `${colors.bold(colors.yellow('read-config-file'))} @ ${colors.dim((await getOwnVersion()).version)}: ${colors.magenta(
-      colors.bold(state.cmd),
-    )}`,
+    `${colors.bold(colors.yellow('read-config-file'))} @ ${colors.dim(
+      (await getOwnVersion()).version,
+    )}: ${colors.magenta(colors.bold(state.cmd))}`,
     colors.gray('...'),
   )
 
@@ -96,9 +96,12 @@ export const cli = async (args: string[]) => {
     }
     case 'readConfigFile': {
       try {
-        await readConfigFile({
-          foo: options.foo,
+        const configData = await readConfigFile({
+          configFilePath: options.configFilePath,
         })
+
+        console.log(colors.green('Config read:'), options.configFilePath)
+        console.log(JSON.stringify(configData, null, 2))
       } catch (e) {
         throwAndExit(e)
       }

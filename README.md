@@ -1,18 +1,17 @@
 <h1 align="center">read-config-file</h1>
 
-> Explains what it does
+> Tiny library to read config files like `your.config.js`, `your.config.mjs`, `your.config.ts`, `your.conifg.json` or `your.config.json5` from disk.
 
 <h2 align="center">User Stories</h2>
 
-1. As a developer, I want to use ReadConfigFile for X
-
-2. As a developer, I don't want to do Y
+1. As a developer, I want to read config files for my project/library/framework
+2. As a developer, I don't want to write that code again and again
 
 <h2 align="center">Features</h2>
 
-- ✅ Does X and Y
+- ✅ Reads and evalutates config files from disk: `.js`, `.mjs`, `.ts`, `.json` and `.json5`
 - ✅ Available as a simple API and simple to use CLI
-- ✅ Just `136 byte` nano sized (ESM, gizpped)
+- ✅ Just `730 bytes` nano sized (ESM, gizpped)
 - ✅ Tree-shakable and side-effect free
 - ✅ Runs on Windows, Mac, Linux, CI tested
 - ✅ First class TypeScript support
@@ -20,7 +19,7 @@
 
 <h2 align="center">Example usage (CLI)</h2>
 
-`npx read-config-file readConfigFile --foo X`
+`NODE_OPTIONS='--experimental-vm-modules' npx read-config-file --config ./test/some.config.ts`
 
 > You need at least version 18 of [Node.js](https://www.nodejs.org) installed.
 
@@ -37,7 +36,7 @@
 import { readConfigFile } from 'read-config-file'
 
 const result = await readConfigFile({
-  foo: 'X',
+  configFilePath: './test/some.config.ts',
 })
 ```
 
