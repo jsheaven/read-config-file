@@ -9,6 +9,7 @@ import JSON5 from 'json5'
 
 export interface ReadConfigFileOptions {
   configFilePath: string
+  esbuildOptions?: BuildOptions
 }
 
 export interface RunOptions {
@@ -24,37 +25,11 @@ export interface DefaultExport {
   [fnName: string]: () => unknown
 }
 
-/** dynamic ESM module linking */
-export const linker = (runContext: vm.Context) => {
-  return async (specifier: string) => {
-    return new Promise(async (resolveLink) => {
-      let module: any
-      if (!module) {
-        module = await import(specifier)
-      }
-
-      const exportNames = Object.keys(module)
-
-      // @ts-ignore
-      const syntheticModule = new vm.SyntheticModule(
-        exportNames,
-        function () {
-          exportNames.forEach((key) => {
-            this.setExport(key, module[key])
-          })
-        },
-        { context: runContext },
-      )
-      resolveLink(syntheticModule)
-    })
-  }
-}
-
 /** dynamic ESM module execution via VM */
 export const run = async <Imports, Exports = DefaultExport>(
   scriptCode: string,
   contextData: Imports,
-  options?: RunOptions,
+  options: RunOptions,
 ): Promise<{
   exports: Exports
   global: any
@@ -62,14 +37,14 @@ export const run = async <Imports, Exports = DefaultExport>(
   const context = vm.createContext(contextData)
 
   const sourceTextModuleOptions: RunOptions = {
-    ...(options || {}),
+    ...options,
     context,
   }
 
   // @ts-ignore
   const mod = new vm.SourceTextModule(scriptCode, sourceTextModuleOptions)
 
-  await mod.link(linker(context))
+  await mod.link(() => {})
   await mod.evaluate()
 
   return {
@@ -82,7 +57,7 @@ export const run = async <Imports, Exports = DefaultExport>(
 export const makeTempDir = () => join(mkdtempSync(join(tmpdir(), `${randomBytes(8).readBigUInt64LE(0).toString()}-`)))
 
 /** transforms the TypeScript config file config.ts in project root directory */
-export const readConfigFile = async ({ configFilePath }: ReadConfigFileOptions) => {
+export const readConfigFile = async ({ configFilePath, esbuildOptions }: ReadConfigFileOptions) => {
   const configFilePathParsed = parse(configFilePath)
 
   if (configFilePathParsed.ext === '.json') {
@@ -100,13 +75,14 @@ export const readConfigFile = async ({ configFilePath }: ReadConfigFileOptions) 
     platform: 'node',
     format: 'esm',
     jsx: 'preserve',
-    target: 'es2020',
+    target: 'es2022',
     logLevel: 'error',
-    bundle: false,
+    bundle: true,
     external: undefined,
     sourcemap: 'both',
     entryPoints: [configFilePath],
     outfile,
+    ...(esbuildOptions || {}),
   } as BuildOptions)
 
   const jsCode = await readFile(outfile, { encoding: 'utf8' })
