@@ -11,7 +11,7 @@
 
 - ✅ Reads and evalutates config files from disk: `.js`, `.mjs`, `.ts`, `.json` and `.json5`
 - ✅ Available as a simple API and simple to use CLI
-- ✅ Just `730 bytes` nano sized (ESM, gizpped)
+- ✅ Just `636 bytes` nano sized (ESM, gizpped)
 - ✅ Tree-shakable and side-effect free
 - ✅ Runs on Windows, Mac, Linux, CI tested
 - ✅ First class TypeScript support
